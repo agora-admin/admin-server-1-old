@@ -31,12 +31,12 @@ const getBalance = () => {
 
 const setSpeaker = async (body) => {
     return new Promise((resolve, reject) => {
-        const gas = 0;
-        web3.eth.getGasPrice().then((gas) => {
-            gas = gas;
-        }).catch(err => {
-            reject(err);
-        });
+        // const gas = 0;
+        // web3.eth.getGasPrice().then((gas) => {
+        //     gas = gas;
+        // }).catch(err => {
+        //     reject(err);
+        // });
         discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
             gasPrice: 35000000000,
             from: account.address,

@@ -238,10 +238,10 @@ app.post('/137/setSpeaker', async (req, res) => {
             addresses: adds
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send({
             error: err.message
         });
-        console.log(err);
     }
 })
 app.post('/4/setSpeaker', async (req, res) => {
