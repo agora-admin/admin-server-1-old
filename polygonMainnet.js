@@ -30,9 +30,15 @@ const getBalance = () => {
 }
 
 const setSpeaker = async (body) => {
+    
     return new Promise((resolve, reject) => {
+        const gas = web3.eth.getGasPrice().then((gas) => {
+            return gas;
+        }).catch(err => {
+            reject(err)
+        })
         discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
-            gasPrice: await web3.eth.getGasPrice(),
+            gasPrice: gas,
             from: account.address,
             gas: 1000000
         })
@@ -58,8 +64,13 @@ const getApprovedSpeakerAddresses = (id) => {
 
 const terminateProposal = async (id) => {
     return new Promise((resolve, reject) => {
+        const gas = web3.eth.getGasPrice().then((gas) => {
+            return gas;
+        }).catch(err => {
+            reject(err)
+        })
         discourseHub.methods.terminateProposal(id).send({
-            gasPrice: await web3.eth.getGasPrice(),
+            gasPrice: gas,
             from: account.address,
             gas: 1000000
         })
