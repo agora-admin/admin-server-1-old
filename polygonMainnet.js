@@ -38,7 +38,7 @@ const setSpeaker = async (body) => {
             reject(err);
         });
         discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
-            gasPrice: gas,
+            gasPrice: 35000000000,
             from: account.address,
             gas: 1000000
         })
