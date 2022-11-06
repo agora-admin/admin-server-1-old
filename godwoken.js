@@ -1,9 +1,9 @@
 const Web3 = require('web3');
 const DiscourseAbi = require('./abi/DiscourseHub.json');
 
-const web3 = new Web3(new Web3.providers.HttpProvider(process.env.ALCHEMY_ENDPOINT_MUMBAI));
-let discourseHub = new web3.eth.Contract(DiscourseAbi, process.env.DISCOURSE_CONTRACT_ADDRESS_MUMBAI);
-let account = web3.eth.accounts.privateKeyToAccount(process.env.ADMIN_PRIVATE_KEY);
+const web3 = new Web3(new Web3.providers.HttpProvider(process.env.GODWOKEN_ENDPOINT));
+let discourseHub = new web3.eth.Contract(DiscourseAbi, process.env.DISCOURSE_CONTRACT_ADDRESS_GODWOKEN);
+let account = web3.eth.accounts.privateKeyToAccount(process.env.ADMIN_PRIVATE_KEY_GODWOKEN);
 web3.eth.accounts.wallet.add(account);
 
 const isDisputed = (id) => {
@@ -29,9 +29,9 @@ const getBalance = () => {
     })
 }
 
-const setSchedule = async (body) => {
-    return new Promise((resolve,reject) => {
-        discourseHub.methods.scheduleDiscourse(+body.id, +body.timestamp).send({
+const setSpeaker = async (body) => {
+    return new Promise((resolve, reject) => {
+        discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
             from: account.address,
             gas: 1000000
         })
@@ -45,9 +45,9 @@ const setSchedule = async (body) => {
     })
 }
 
-const setSpeaker = async (body) => {
-    return new Promise((resolve, reject) => {
-        discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
+const setSchedule = async (body) => {
+    return new Promise((resolve,reject) => {
+        discourseHub.methods.scheduleDiscourse(+body.id, +body.timestamp).send({
             from: account.address,
             gas: 1000000
         })
@@ -124,8 +124,8 @@ const getBlock = () => {
 module.exports =  {
     isDisputed,
     getBalance,
-    setSchedule,
     setSpeaker,
+    setSchedule,
     terminateProposal,
     getTotalProposals,
     getApprovedSpeakerAddresses,

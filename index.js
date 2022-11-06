@@ -11,6 +11,7 @@ const aurora = require('./aurora');
 const mumbai = require('./polygon');
 const rinkeby = require('./rinkeby');
 const polygon = require('./polygonMainnet');
+const godwoken = require('./godwoken');
 require('dotenv').config();
 
 app.use(function(req, res, next) {
@@ -180,6 +181,18 @@ app.get('/balance', async (req, res) => {
     
 // })
 
+// ----------- isDisputed ----------------------
+
+app.get('/71401/isDisputed/:id', (req, res) => {
+    let id = req.params.id;
+    godwoken.isDisputed(id)
+        .then(result => {
+            res.send(result);
+        })
+        .catch(err => {
+            res.send(err);
+        })
+})
 
 app.get('/137/isDisputed/:id', (req, res) => {
     let id = req.params.id;
@@ -191,6 +204,7 @@ app.get('/137/isDisputed/:id', (req, res) => {
             res.send(err);
         })
 })
+
 app.get('/4/isDisputed/:id', (req, res) => {
     let id = req.params.id;
     rinkeby.isDisputed(id)
@@ -223,7 +237,27 @@ app.get('/1313161555/isDisputed/:id', (req, res) => {
         })
 })
 
+// --------------- setSpeaker -----------------------
 
+app.post('/71401/setSpeaker', async (req, res) => {
+    try {
+        let tx = await godwoken.setSpeaker(req.body);
+        let adds = await godwoken.getApprovedSpeakerAddresses(+req.body.id);
+        res.status(200).send({
+            tx: tx,
+            addresses: adds
+        })
+        console.log({
+            tx: tx,
+            addresses: adds
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            error: err.message
+        });
+    }
+})
 
 app.post('/137/setSpeaker', async (req, res) => {
     try {
@@ -302,6 +336,124 @@ app.post('/1313161555/setSpeaker', async (req, res) => {
         console.log(err);
     }
 })
+
+// ------------------ setSchedule -------------------------
+
+app.post('/71401/setSchedule', async (req, res) => {
+    try {
+        let tx = await godwoken.setSchedule(req.body);
+        let adds = await godwoken.getApprovedSpeakerAddresses(+req.body.id);
+        res.status(200).send({
+            tx: tx,
+            addresses: adds
+        })
+        console.log({
+            tx: tx,
+            addresses: adds
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            error: err.message
+        });
+    }
+})
+
+app.post('/137/setSchedule', async (req, res) => {
+    try {
+        let tx = await polygon.setSchedule(req.body);
+        let adds = await polygon.getApprovedSpeakerAddresses(+req.body.id);
+        res.status(200).send({
+            tx: tx,
+            addresses: adds
+        })
+        console.log({
+            tx: tx,
+            addresses: adds
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            error: err.message
+        });
+    }
+})
+app.post('/4/setSchedule', async (req, res) => {
+    try {
+        let tx = await rinkeby.setSchedule(req.body);
+        let adds = await rinkeby.getApprovedSpeakerAddresses(+req.body.id);
+        res.status(200).send({
+            tx: tx,
+            addresses: adds
+        })
+        console.log({
+            tx: tx,
+            addresses: adds
+        });
+    } catch (err) {
+        res.status(500).send({
+            error: err.message
+        });
+        console.log(err);
+    }
+})
+app.post('/80001/setSchedule', async (req, res) => {
+    try {
+        let tx = await mumbai.setSchedule(req.body);
+        let adds = await mumbai.getApprovedSpeakerAddresses(+req.body.id);
+        res.status(200).send({
+            tx: tx,
+            addresses: adds
+        })
+        console.log({
+            tx: tx,
+            addresses: adds
+        });
+    } catch (err) {
+        res.status(500).send({
+            error: err.message
+        });
+        console.log(err);
+    }
+})
+
+app.post('/1313161555/setSchedule', async (req, res) => {
+    try {
+        let tx = await aurora.setSchedule(req.body);
+        let adds = await aurora.getApprovedSpeakerAddresses(+req.body.id);
+        res.status(200).send({
+            tx: tx,
+            addresses: adds
+        })
+        console.log({
+            tx: tx,
+            addresses: adds
+        });
+    } catch (err) {
+        res.status(500).send({
+            error: err.message
+        });
+        console.log(err);
+    }
+})
+
+// ----------------- terminateProposal --------------------
+
+app.post('/71401/terminateProposal', async (req, res) => {
+    try {
+        let tx = await godwoken.terminateProposal(req.body.id);
+        res.status(200).send({
+            tx: tx
+        })
+        console.log({
+            tx: tx
+        });
+    } catch (err) {
+        res.status(500).send({
+            error: err.message
+        });
+        console.log(err);
+    }})
 
 app.post('/137/terminateProposal', async (req, res) => {
     try {

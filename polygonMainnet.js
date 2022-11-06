@@ -29,6 +29,22 @@ const getBalance = () => {
     })
 }
 
+const setSchedule = async (body) => {
+    return new Promise((resolve,reject) => {
+        discourseHub.methods.scheduleDiscourse(+body.id, +body.timestamp).send({
+            from: account.address,
+            gas: 1000000
+        })
+        .then(result => {
+            console.log(result);
+            resolve(result);
+        })
+        .catch(err => {
+            reject(err);
+        })
+    })
+}
+
 const setSpeaker = async (body) => {
     return new Promise((resolve, reject) => {
         // const gas = 0;
@@ -122,6 +138,7 @@ const getBlock = () => {
 module.exports =  {
     isDisputed,
     getBalance,
+    setSchedule,
     setSpeaker,
     terminateProposal,
     getTotalProposals,
