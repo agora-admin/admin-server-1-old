@@ -49,7 +49,7 @@ const setSpeaker = async (body) => {
     return new Promise((resolve, reject) => {
         discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
             from: account.address,
-            gas: 1000000
+            gas: 10000000
         })
         .then(result => {
             console.log(result);
