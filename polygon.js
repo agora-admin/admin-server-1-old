@@ -46,10 +46,11 @@ const setSchedule = async (body) => {
 }
 
 const setSpeaker = async (body) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
             from: account.address,
-            gas: 10000000
+            gasLimit: 10000000,
+            gasPrice: await web3.eth.getGasPrice()
         })
         .then(result => {
             console.log(result);
