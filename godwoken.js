@@ -1,9 +1,9 @@
 const Web3 = require('web3');
 const DiscourseAbi = require('./abi/DiscourseHub.json');
 
-const web3 = new Web3(new Web3.providers.HttpProvider('https://aurora-testnet.infura.io/v3/a4d6ff8d0a7c4b93a9a4ac41adc048c8'));
-let discourseHub = new web3.eth.Contract(DiscourseAbi, process.env.DISCOURSE_CONTRACT_ADDRESS_AURORA);
-let account = web3.eth.accounts.privateKeyToAccount(process.env.ADMIN_PRIVATE_KEY);
+const web3 = new Web3(new Web3.providers.HttpProvider(process.env.GODWOKEN_ENDPOINT));
+let discourseHub = new web3.eth.Contract(DiscourseAbi, process.env.DISCOURSE_CONTRACT_ADDRESS_GODWOKEN);
+let account = web3.eth.accounts.privateKeyToAccount(process.env.ADMIN_PRIVATE_KEY_GODWOKEN);
 web3.eth.accounts.wallet.add(account);
 
 const isDisputed = (id) => {
@@ -29,23 +29,6 @@ const getBalance = () => {
     })
 }
 
-const setSchedule = async (body) => {
-    return new Promise(async (resolve, reject) => {
-        discourseHub.methods.scheduleDiscourse(+body.id, +body.timestamp).send({
-            from: account.address,
-            gasLimit: 1000000,
-            gasPrice: await web3.eth.getGasPrice()
-        })
-            .then(result => {
-                console.log(result);
-                resolve(result);
-            })
-            .catch(err => {
-                reject(err);
-            })
-    })
-}
-
 const setSpeaker = async (body) => {
     return new Promise(async (resolve, reject) => {
         discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
@@ -54,10 +37,33 @@ const setSpeaker = async (body) => {
             gasPrice: await web3.eth.getGasPrice()
         })
             .then(result => {
+                console.log("[Godwoken]", "Speaker set for ", body.id, "add:", body.address);
                 console.log(result);
                 resolve(result);
             })
             .catch(err => {
+                console.log("[Godwoken]", "Error setting speaker for", body.id, "add:", body.address);
+                console.log(err);
+                reject(err);
+            })
+    })
+}
+
+const setSchedule = async (body) => {
+    return new Promise(async (resolve, reject) => {
+        discourseHub.methods.scheduleDiscourse(+body.id, +body.timestamp).send({
+            from: account.address,
+            gasLimit: 1000000,
+            gasPrice: await web3.eth.getGasPrice()
+        })
+            .then(result => {
+                console.log("[Godwoken]", "Discourse scheduled at ", body.timestamp, " for proposal ", body.id);
+                console.log(result);
+                resolve(result);
+            })
+            .catch(err => {
+                console.log("[Godwoken]", "Error Scheduling Discourse for", body.id, "at", body.timestamp);
+                console.log(err);
                 reject(err);
             })
     })
@@ -66,7 +72,6 @@ const setSpeaker = async (body) => {
 const getApprovedSpeakerAddresses = (id) => {
     return new Promise((resolve, reject) => {
         discourseHub.methods.getApprovedSpeakerAddresses(id).call().then(result => {
-            console.log(result);
             resolve(result);
         }).catch(err => {
             reject(err);
@@ -82,14 +87,18 @@ const terminateProposal = async (id) => {
             gasPrice: await web3.eth.getGasPrice()
         })
             .then(result => {
+                console.log("[Godwoken]", "Proposal terminated ", id);
                 console.log(result);
                 resolve(result);
             })
             .catch(err => {
+                console.log("[Godwoken]", "Error terminating proposal", id);
+                console.log(err);
                 reject(err);
             })
     })
 }
+
 
 const getTotalProposals = () => {
     return new Promise((resolve, reject) => {
@@ -123,6 +132,7 @@ const getBlock = () => {
             })
     })
 }
+
 
 module.exports = {
     isDisputed,
