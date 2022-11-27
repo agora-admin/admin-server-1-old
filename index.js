@@ -523,15 +523,19 @@ app.post('/1313161555/terminateProposal', async (req, res) => {
 
 
 app.post('/tweet', (req, res) => {
-    T.post('statuses/update', {
-        status: req.body.status
-    }, function(err, data, response) {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err);
-        }
-        res.send(data);
-    })
+    try {
+        T.post('statuses/update', {
+            status: req.body.status
+        }, function(err, data, response) {
+            if (err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
+            res.send(data);
+        })
+    } catch (err) {
+        res.status(500).send(err);
+    }
 })
 
 

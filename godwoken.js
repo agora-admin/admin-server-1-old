@@ -23,41 +23,49 @@ const getBalance = () => {
         web3.eth.getBalance(process.env.ADMIN_WALLET).then(balance => {
             resolve(balance);
         })
-        .catch(err => {
-            reject(err);
-        })
+            .catch(err => {
+                reject(err);
+            })
     })
 }
 
 const setSpeaker = async (body) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         discourseHub.methods.setSpeakerAddress(+body.id, body.handle, body.address).send({
             from: account.address,
-            gas: 1000000
+            gasLimit: 1000000,
+            gasPrice: await web3.eth.getGasPrice()
         })
-        .then(result => {
-            console.log(result);
-            resolve(result);
-        })
-        .catch(err => {
-            reject(err);
-        })
+            .then(result => {
+                console.log("[Godwoken]", "Speaker set for ", body.id, "add:", body.address);
+                console.log(result);
+                resolve(result);
+            })
+            .catch(err => {
+                console.log("[Godwoken]", "Error setting speaker for", body.id, "add:", body.address);
+                console.log(err);
+                reject(err);
+            })
     })
 }
 
 const setSchedule = async (body) => {
-    return new Promise((resolve,reject) => {
+    return new Promise(async (resolve, reject) => {
         discourseHub.methods.scheduleDiscourse(+body.id, +body.timestamp).send({
             from: account.address,
-            gas: 1000000
+            gasLimit: 1000000,
+            gasPrice: await web3.eth.getGasPrice()
         })
-        .then(result => {
-            console.log(result);
-            resolve(result);
-        })
-        .catch(err => {
-            reject(err);
-        })
+            .then(result => {
+                console.log("[Godwoken]", "Discourse scheduled at ", body.timestamp, " for proposal ", body.id);
+                console.log(result);
+                resolve(result);
+            })
+            .catch(err => {
+                console.log("[Godwoken]", "Error Scheduling Discourse for", body.id, "at", body.timestamp);
+                console.log(err);
+                reject(err);
+            })
     })
 }
 
@@ -72,17 +80,22 @@ const getApprovedSpeakerAddresses = (id) => {
 }
 
 const terminateProposal = async (id) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         discourseHub.methods.terminateProposal(id).send({
             from: account.address,
-            gas: 1000000
+            gasLimit: 1000000,
+            gasPrice: await web3.eth.getGasPrice()
         })
-        .then(result => {
-            resolve(result);
-        })
-        .catch(err => {
-            reject(err);
-        })
+            .then(result => {
+                console.log("[Godwoken]", "Proposal terminated ", id);
+                console.log(result);
+                resolve(result);
+            })
+            .catch(err => {
+                console.log("[Godwoken]", "Error terminating proposal", id);
+                console.log(err);
+                reject(err);
+            })
     })
 }
 
@@ -90,12 +103,12 @@ const terminateProposal = async (id) => {
 const getTotalProposals = () => {
     return new Promise((resolve, reject) => {
         discourseHub.methods.getTotalProposals().call()
-        .then(result => {
-            resolve(result);
-        })
-        .catch(err => {
-            reject(err);
-        })
+            .then(result => {
+                resolve(result);
+            })
+            .catch(err => {
+                reject(err);
+            })
     })
 }
 
@@ -114,14 +127,14 @@ const getBlock = () => {
         web3.eth.getBlockNumber().then(block => {
             resolve(block);
         })
-        .catch(err => {
-            reject(err);
-        })
+            .catch(err => {
+                reject(err);
+            })
     })
 }
 
 
-module.exports =  {
+module.exports = {
     isDisputed,
     getBalance,
     setSpeaker,
